@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardar Marcador</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      background: #f8f9fa;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .current-page {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #e9ecef;
+    }
+
+    .page-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .page-url {
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #5a6fd8;
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .status {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .status.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="title">📌 Marcadores Bauset</h1>
+  </div>
+
+  <div class="current-page">
+    <div class="page-title" id="pageTitle">Cargando...</div>
+    <div class="page-url" id="pageUrl">...</div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <form id="bookmarkForm">
+    <div class="form-group">
+      <label for="category" class="form-label">Categoría</label>
+      <select id="category" class="form-select" required>
+        <option value="">Cargando...</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tags" class="form-label">Etiquetas (separadas por comas)</label>
+      <input type="text" id="tags" class="form-input" placeholder="ej: trabajo, diseño, importante">
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="form-label">Descripción (opcional)</label>
+      <textarea id="description" class="form-textarea" rows="2" placeholder="Añade una descripción..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="saveBtn">
+      📸 Guardar y Capturar
+    </button>
+
+    <button type="button" class="btn btn-secondary" id="manageBtn">
+      ⚙️ Gestionar Marcadores
+    </button>
+  </form>
+
+  <script src="popup-simple.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Marcadores Bauset",
+  "version": "1.0.0",
+  "description": "Gestiona marcadores con categorías y etiquetas, captura miniaturas locales y genera sitios estáticos navegables.",
+
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "downloads",
+    "storage",
+    "scripting",
+    "unlimitedStorage"
+  ],
+
+  "background": {
+    "service_worker": "background/service-worker-simple.js"
+  },
+
+  "action": {
+    "default_popup": "popup/popup-simple.html",
+    "default_title": "Guardar y capturar marcador"
+  },
+
+  "options_page": "options/manage.html",
+
+  "commands": {
+    "save-bookmark": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Guardar y capturar marcador de la pestaña activa"
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+B",
+        "mac": "Command+Shift+B"
+      }
+    }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["content/overlay-styles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

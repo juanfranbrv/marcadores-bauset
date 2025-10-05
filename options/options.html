@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcadores Bauset - Gestión</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="app-title">
+          <img src="../icons/icon-32.png" alt="" class="app-icon">
+          Marcadores Bauset
+        </h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="exportBtn">
+            <span class="btn-icon">📦</span>
+            Exportar Sitio
+          </button>
+          <button class="btn btn-secondary" id="settingsBtn">
+            <span class="btn-icon">⚙️</span>
+            Configuración
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="app-nav">
+      <div class="nav-content">
+        <div class="search-box">
+          <input
+            type="search"
+            id="searchInput"
+            class="search-input"
+            placeholder="Buscar marcadores..."
+            autocomplete="off"
+          >
+          <button class="search-clear" id="searchClear">×</button>
+        </div>
+
+        <div class="filters">
+          <select id="categoryFilter" class="filter-select">
+            <option value="">Todas las categorías</option>
+          </select>
+          <select id="statusFilter" class="filter-select">
+            <option value="">Todos los estados</option>
+            <option value="real">Con captura real</option>
+            <option value="provisional">Provisional (OG)</option>
+            <option value="placeholder">Placeholder</option>
+            <option value="failed">Fallidas</option>
+          </select>
+          <select id="sortBy" class="filter-select">
+            <option value="created_desc">Más recientes</option>
+            <option value="created_asc">Más antiguos</option>
+            <option value="title_asc">Por título A-Z</option>
+            <option value="title_desc">Por título Z-A</option>
+            <option value="url_asc">Por URL A-Z</option>
+          </select>
+        </div>
+
+        <div class="bulk-actions" id="bulkActions" style="display: none;">
+          <span class="bulk-counter" id="bulkCounter">0 seleccionados</span>
+          <button class="btn btn-sm btn-secondary" id="bulkCategoryBtn">Cambiar categoría</button>
+          <button class="btn btn-sm btn-secondary" id="bulkTagsBtn">Añadir etiquetas</button>
+          <button class="btn btn-sm btn-danger" id="bulkDeleteBtn">Eliminar</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="app-main">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Categorías</h3>
+          <div class="categories-list" id="categoriesList">
+            <div class="category-item loading">Cargando...</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" id="addCategoryBtn">
+            <span class="btn-icon">+</span>
+            Nueva categoría
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Etiquetas populares</h3>
+          <div class="tags-cloud" id="tagsCloud">
+            <div class="tag-loading">Cargando...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Estadísticas</h3>
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-item">
+              <span class="stat-value" id="totalBookmarks">-</span>
+              <span class="stat-label">Marcadores</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="totalImages">-</span>
+              <span class="stat-label">Imágenes</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="storageUsed">-</span>
+              <span class="stat-label">Almacenamiento</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div class="content-header">
+          <div class="view-controls">
+            <button class="view-btn active" data-view="grid" id="gridViewBtn" title="Vista de cuadrícula">
+              <span class="btn-icon">⊞</span>
+            </button>
+            <button class="view-btn" data-view="list" id="listViewBtn" title="Vista de lista">
+              <span class="btn-icon">☰</span>
+            </button>
+          </div>
+          <div class="results-info">
+            <span id="resultsCount">0 marcadores</span>
+          </div>
+        </div>
+
+        <div class="bookmarks-container" id="bookmarksContainer">
+          <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Cargando marcadores...</p>
+          </div>
+
+          <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📌</div>
+            <h3>No se encontraron marcadores</h3>
+            <p>Prueba a ajustar los filtros o añade tu primer marcador.</p>
+            <button class="btn btn-primary" id="addBookmarkBtn">
+              Añadir marcador
+            </button>
+          </div>
+
+          <div class="bookmarks-grid" id="bookmarksGrid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modales -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="bookmarkModal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Editar marcador</h2>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <form class="modal-form" id="bookmarkForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editTitle" class="form-label">Título</label>
+              <input type="text" id="editTitle" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editUrl" class="form-label">URL</label>
+              <input type="url" id="editUrl" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editCategory" class="form-label">Categoría</label>
+              <select id="editCategory" class="form-select" required>
+                <option value="">Selecciona una categoría</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editTags" class="form-label">Etiquetas</label>
+              <div class="tags-editor" id="tagsEditor">
+                <div class="selected-tags" id="selectedTags"></div>
+                <input type="text" id="editTags" class="tags-input" placeholder="Añadir etiquetas...">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editDescription" class="form-label">Descripción</label>
+              <textarea id="editDescription" class="form-textarea" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="recaptureBtn">
+              <span class="btn-icon">📷</span>
+              Recapturar
+            </button>
+            <button type="button" class="btn btn-danger" id="deleteBtn">
+              <span class="btn-icon">🗑️</span>
+              Eliminar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-icon">💾</span>
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="categoryModal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="categoryModalTitle">Nueva categoría</h2>
+        <button class="modal-close" id="categoryModalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <form class="modal-form" id="categoryForm">
+          <div class="form-group">
+            <label for="categoryName" class="form-label">Nombre de la categoría</label>
+            <input type="text" id="categoryName" class="form-input" required>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="categoryCancel">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="exportModal">
+      <div class="modal-header">
+        <h2 class="modal-title">Exportar sitio estático</h2>
+        <button class="modal-close" id="exportModalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <form class="modal-form" id="exportForm">
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="includeMid" checked>
+              <span class="checkmark"></span>
+              Incluir imágenes de alta resolución
+            </label>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="regenerateImages">
+              <span class="checkmark"></span>
+              Regenerar todas las imágenes
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="exportCancel">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-icon">📦</span>
+              Generar y Descargar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../utils/constants.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

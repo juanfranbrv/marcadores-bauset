@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Marcadores - Marcadores Bauset</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: #666;
+    }
+
+    .tab.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab:hover:not(.active) {
+      background: #f8f9fa;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #5a6fd8;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .card {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      position: relative;
+    }
+
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .card-meta {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .card-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .bookmark-url {
+      font-size: 12px;
+      color: #667eea;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .bookmark-tags {
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e1effe;
+      color: #1e40af;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+
+    .bookmark-description {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    .card-thumbnail {
+      width: 100%;
+      height: 120px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bookmark-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .placeholder-thumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 24px;
+    }
+
+    .placeholder-thumb::before {
+      content: '📸';
+    }
+
+    .category-color-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .category-icon {
+      margin-right: 6px;
+      font-size: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-bar select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 10px 0;
+      color: #999;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .status-message {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .status-message.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status-message.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-message.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 768px) {
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        max-width: none;
+      }
+
+      .actions {
+        justify-content: center;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📌 Gestión de Marcadores</h1>
+      <p>Organiza tus marcadores y categorías</p>
+    </div>
+
+    <div class="status-message" id="statusMessage"></div>
+
+    <!-- Estadísticas -->
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-value" id="totalBookmarks">0</span>
+        <div class="stat-label">Total Marcadores</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="totalCategories">0</span>
+        <div class="stat-label">Categorías</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="totalTags">0</span>
+        <div class="stat-label">Etiquetas Únicas</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="recentBookmarks">0</span>
+        <div class="stat-label">Esta Semana</div>
+      </div>
+    </div>
+
+    <!-- Pestañas -->
+    <div class="tabs">
+      <button class="tab active" data-tab="bookmarks">📖 Marcadores</button>
+      <button class="tab" data-tab="categories">📁 Categorías</button>
+      <button class="tab" data-tab="settings">⚙️ Configuración</button>
+    </div>
+
+    <!-- Contenido de Marcadores -->
+    <div class="tab-content active" id="bookmarks">
+      <div class="section">
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="searchBookmarks" placeholder="🔍 Buscar marcadores...">
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="exportBookmarksBtn">
+              📁 Exportar
+            </button>
+            <button class="btn btn-secondary" id="importBookmarksBtn">
+              📥 Importar
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <select id="filterCategory">
+            <option value="">Todas las categorías</option>
+          </select>
+          <select id="sortBookmarks">
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+            <option value="title">Por título</option>
+            <option value="url">Por URL</option>
+          </select>
+          <button class="btn btn-secondary btn-small" id="clearFiltersBtn">
+            🗑️ Limpiar filtros
+          </button>
+        </div>
+
+        <div class="grid grid-2" id="bookmarksList">
+          <!-- Los marcadores se cargarán aquí -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de Categorías -->
+    <div class="tab-content" id="categories">
+      <div class="section">
+        <div class="toolbar">
+          <h2>Gestión de Categorías</h2>
+          <div class="actions">
+            <button class="btn btn-primary" id="addCategoryBtn">
+              ➕ Nueva Categoría
+            </button>
+          </div>
+        </div>
+
+        <div class="grid" id="categoriesList">
+          <!-- Las categorías se cargarán aquí -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de Configuración -->
+    <div class="tab-content" id="settings">
+      <div class="section">
+        <h2>Configuración y Herramientas</h2>
+
+        <div class="form-group">
+          <label>Exportar Sitio Web Estático</label>
+          <div class="actions">
+            <button class="btn btn-primary" id="exportStaticSiteBtn">
+              🌐 Generar Sitio Web (ZIP)
+            </button>
+          </div>
+          <p style="margin-top: 8px; font-size: 12px; color: #666;">
+            Genera un sitio web HTML completo con todos tus marcadores, imágenes y navegación por categorías/etiquetas.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label>Acciones de Datos</label>
+          <div class="actions">
+            <button class="btn btn-secondary" id="backupDataBtn">
+              💾 Respaldar Datos
+            </button>
+            <button class="btn btn-secondary" id="restoreDataBtn">
+              📂 Restaurar Datos
+            </button>
+            <button class="btn btn-danger" id="clearAllDataBtn">
+              🗑️ Limpiar Todo
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Depuración</label>
+          <div class="actions">
+            <button class="btn btn-secondary" id="testExtensionBtn">
+              🧪 Probar Extensión
+            </button>
+            <button class="btn btn-secondary" id="showLogsBtn">
+              📋 Ver Logs
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Enlaces</label>
+          <div class="actions">
+            <a href="options-simple.html" class="btn btn-secondary">
+              🔙 Opciones Simples
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar marcador -->
+  <div class="modal" id="editBookmarkModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Editar Marcador</h3>
+      <form id="editBookmarkForm">
+        <div class="form-group">
+          <label for="editTitle">Título</label>
+          <input type="text" id="editTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="editUrl">URL</label>
+          <input type="url" id="editUrl" required readonly>
+        </div>
+        <div class="form-group">
+          <label for="editCategory">Categoría</label>
+          <select id="editCategory" required>
+            <!-- Se llenarán desde JS -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editTags">Etiquetas (separadas por comas)</label>
+          <input type="text" id="editTags" placeholder="trabajo, importante, etc.">
+        </div>
+        <div class="form-group">
+          <label for="editDescription">Descripción</label>
+          <textarea id="editDescription" placeholder="Descripción opcional..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para crear/editar categoría -->
+  <div class="modal" id="editCategoryModal">
+    <div class="modal-content">
+      <h3 id="categoryModalTitle">Nueva Categoría</h3>
+      <form id="editCategoryForm">
+        <div class="form-group">
+          <label for="editCategoryName">Nombre</label>
+          <input type="text" id="editCategoryName" required placeholder="Ej: Trabajo, Personal, Estudios...">
+        </div>
+        <div class="form-group">
+          <label for="editCategoryDescription">Descripción (opcional)</label>
+          <textarea id="editCategoryDescription" placeholder="Descripción de la categoría..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editCategoryIcon">Icono</label>
+          <input type="text" id="editCategoryIcon" placeholder="📁" maxlength="2" style="font-size: 24px; text-align: center;">
+          <small style="display: block; margin-top: 4px; color: #666; font-size: 12px;">
+            Usa un emoji (📁 📚 💼 🎨 🏠 ⚡ 🔧 📖 🎯 💡)
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="editCategoryColor">Color</label>
+          <input type="color" id="editCategoryColor" value="#667eea">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelCategoryBtn">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="saveCategoryBtn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Input oculto para importar archivos -->
+  <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+  <!-- Scripts necesarios para exportación -->
+  <script src="../utils/constants.js"></script>
+  <script src="../utils/zip-creator.js"></script>
+  <script src="../utils/opfs-manager.js"></script>
+  <script src="../utils/db-manager.js"></script>
+  <script src="../utils/storage-manager.js"></script>
+  <script src="../utils/export-service.js"></script>
+  <script src="manage.js"></script>
+</body>
+</html>

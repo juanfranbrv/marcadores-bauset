@@ -1,0 +1,93 @@
+/* Estilos para ocultar elementos que interfieren con la captura de pantalla */
+
+/* Banners de cookies comunes */
+.cookie-banner,
+.cookie-notice,
+.cookie-consent,
+.gdpr-banner,
+.privacy-banner,
+[id*="cookie"],
+[class*="cookie"],
+[id*="gdpr"],
+[class*="gdpr"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Modales y overlays */
+.modal-overlay,
+.overlay,
+.popup-overlay,
+.newsletter-popup,
+.subscription-modal,
+[id*="modal"],
+[class*="modal"],
+[id*="popup"],
+[class*="popup"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Notificaciones y alertas */
+.notification,
+.alert,
+.toast,
+.snackbar,
+[class*="notification"],
+[class*="alert"],
+[class*="toast"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Elementos flotantes */
+.floating,
+.sticky-banner,
+.fixed-banner,
+[class*="floating"],
+[class*="sticky"],
+[class*="fixed"] {
+  position: static !important;
+  display: none !important;
+}
+
+/* Chat widgets */
+.chat-widget,
+.support-chat,
+.live-chat,
+[id*="chat"],
+[class*="chat"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Barras de promoción */
+.promo-bar,
+.announcement-bar,
+.top-banner,
+[class*="promo"],
+[class*="announcement"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Elementos con z-index muy alto */
+[style*="z-index: 999"],
+[style*="z-index: 9999"],
+[style*="z-index: 99999"] {
+  z-index: -1 !important;
+  display: none !important;
+}
+
+/* Overlays de edad y verificación */
+.age-verification,
+.age-gate,
+.verification-overlay,
+[class*="age-gate"],
+[class*="verification"] {
+  display: none !important;
+  visibility: hidden !important;
+}

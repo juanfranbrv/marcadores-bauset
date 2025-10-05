@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardar Marcador</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h1 class="popup-title">
+        <img src="../icons/icon-32.png" alt="" class="popup-icon">
+        Marcadores Bauset
+      </h1>
+    </header>
+
+    <main class="popup-main">
+      <div class="current-page" id="currentPage">
+        <div class="page-favicon">
+          <img id="pageFavicon" src="" alt="">
+        </div>
+        <div class="page-info">
+          <h2 class="page-title" id="pageTitle">Cargando...</h2>
+          <p class="page-url" id="pageUrl"></p>
+        </div>
+      </div>
+
+      <form class="bookmark-form" id="bookmarkForm">
+        <div class="form-group">
+          <label for="category" class="form-label">Categoría</label>
+          <select id="category" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tags" class="form-label">Etiquetas</label>
+          <div class="tags-input-container">
+            <div class="tags-display" id="tagsDisplay"></div>
+            <input
+              type="text"
+              id="tagsInput"
+              class="tags-input"
+              placeholder="Escribe etiquetas..."
+              autocomplete="off"
+            >
+          </div>
+          <div class="tags-suggestions" id="tagsSuggestions"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción (opcional)</label>
+          <textarea
+            id="description"
+            class="form-textarea"
+            placeholder="Añade una descripción..."
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="saveBtn">
+            <span class="btn-icon">📌</span>
+            <span class="btn-text">Guardar y Capturar</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="manageBtn">
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-text">Gestionar</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="status-message" id="statusMessage"></div>
+
+      <div class="quick-stats" id="quickStats">
+        <div class="stat-item">
+          <span class="stat-value" id="bookmarkCount">0</span>
+          <span class="stat-label">marcadores</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="categoriesCount">0</span>
+          <span class="stat-label">categorías</span>
+        </div>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <div class="keyboard-hint">
+        <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> para guardar rápido
+      </div>
+    </footer>
+  </div>
+
+  <script src="../utils/constants.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Marcadores</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f8f9fa; color: #333; line-height: 1.6; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; text-align: center; }
+    h1 { font-size: 32px; margin-bottom: 10px; }
+    .stats { font-size: 18px; opacity: 0.9; }
+    nav { background: white; padding: 20px 0; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .search-box { margin-bottom: 20px; }
+    .search-box input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+    main { display: flex; gap: 24px; }
+    .sidebar { width: 280px; flex-shrink: 0; }
+    .sidebar h2 { font-size: 18px; margin-bottom: 15px; }
+    .category-item, .tag-item { padding: 10px; margin-bottom: 8px; background: white; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .category-item:hover, .tag-item:hover { background: #e5e7eb; }
+    .category-item.active { background: #667eea; color: white; }
+    .tag-item { display: inline-block; margin-right: 8px; font-size: 12px; }
+    .tag-item.active { background: #667eea; color: white; }
+    .content { flex: 1; }
+    .bookmarks-grid { display: grid; gap: 20px; }
+    .bookmark-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .bookmark-card h3 { font-size: 18px; margin-bottom: 10px; }
+    .bookmark-card h3 a { color: #333; text-decoration: none; }
+    .bookmark-card h3 a:hover { color: #667eea; }
+    .bookmark-url { color: #667eea; font-size: 14px; margin-bottom: 10px; word-break: break-all; }
+    .bookmark-description { color: #666; font-size: 14px; margin-bottom: 10px; font-style: italic; }
+    .bookmark-tags { margin-bottom: 10px; }
+    .bookmark-tag { display: inline-block; background: #e1effe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 4px; }
+    .bookmark-meta { font-size: 12px; color: #999; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+    footer { text-align: center; padding: 30px 0; color: #666; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>📌 Mis Marcadores</h1>
+      <div class="stats"><span id="bookmarkCount">0</span> marcadores</div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="container">
+      <div class="search-box">
+        <input type="search" id="searchInput" placeholder="🔍 Buscar marcadores..." />
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container" style="display: flex; gap: 24px;">
+      <aside class="sidebar">
+        <h2>📁 Categorías</h2>
+        <div id="categoriesList"></div>
+
+        <h2 style="margin-top: 30px;">🏷️ Etiquetas</h2>
+        <div id="tagsCloud"></div>
+      </aside>
+
+      <section class="content">
+        <div class="bookmarks-grid" id="bookmarksGrid">
+          <div class="empty-state">Cargando marcadores...</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      Generado con <strong>Marcadores Bauset</strong> • <span id="exportDate"></span>
+    </div>
+  </footer>
+
+  <script src="DATA_PLACEHOLDER"></script>
+  <script>
+    let bookmarks = BOOKMARKS_DATA.bookmarks || [];
+    let categories = BOOKMARKS_DATA.categories || [];
+    let tags = BOOKMARKS_DATA.tags || [];
+    let filteredBookmarks = [...bookmarks];
+    let currentCategory = '';
+    let currentTags = [];
+
+    function init() {
+      document.getElementById('bookmarkCount').textContent = bookmarks.length;
+      document.getElementById('exportDate').textContent = new Date(BOOKMARKS_DATA.exportedAt).toLocaleDateString('es-ES');
+
+      renderCategories();
+      renderTags();
+      renderBookmarks();
+
+      document.getElementById('searchInput').addEventListener('input', handleSearch);
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categoriesList');
+      let html = `<div class="category-item active" onclick="selectCategory('')">Todas (${bookmarks.length})</div>`;
+
+      categories.forEach(cat => {
+        const count = bookmarks.filter(b => b.categoryId === cat.id).length;
+        html += `<div class="category-item" onclick="selectCategory('${cat.id}')">${cat.name} (${count})</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderTags() {
+      const container = document.getElementById('tagsCloud');
+      let html = '';
+
+      tags.sort((a, b) => b.usageCount - a.usageCount).slice(0, 20).forEach(tag => {
+        html += `<div class="tag-item" onclick="toggleTag('${tag.name}')">${tag.name} (${tag.usageCount})</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderBookmarks() {
+      const container = document.getElementById('bookmarksGrid');
+
+      if (filteredBookmarks.length === 0) {
+        container.innerHTML = '<div class="empty-state"><h3>No se encontraron marcadores</h3></div>';
+        return;
+      }
+
+      let html = '';
+      filteredBookmarks.forEach(bookmark => {
+        const category = categories.find(c => c.id === bookmark.categoryId);
+        const categoryName = category ? category.name : 'Sin categoría';
+        const tagsHtml = bookmark.tags.map(tag => `<span class="bookmark-tag">${tag}</span>`).join('');
+
+        html += `
+          <div class="bookmark-card">
+            <h3><a href="${bookmark.url}" target="_blank">${bookmark.title}</a></h3>
+            <div class="bookmark-url">${bookmark.url}</div>
+            ${bookmark.description ? `<div class="bookmark-description">${bookmark.description}</div>` : ''}
+            ${bookmark.tags.length > 0 ? `<div class="bookmark-tags">${tagsHtml}</div>` : ''}
+            <div class="bookmark-meta">📁 ${categoryName} • 📅 ${new Date(bookmark.createdAt).toLocaleDateString('es-ES')}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function selectCategory(categoryId) {
+      currentCategory = categoryId;
+      document.querySelectorAll('.category-item').forEach((el, idx) => {
+        el.classList.toggle('active', idx === 0 && !categoryId || el.textContent.includes(categories.find(c => c.id === categoryId)?.name));
+      });
+      applyFilters();
+    }
+
+    function toggleTag(tagName) {
+      const idx = currentTags.indexOf(tagName);
+      if (idx > -1) {
+        currentTags.splice(idx, 1);
+      } else {
+        currentTags.push(tagName);
+      }
+      document.querySelectorAll('.tag-item').forEach(el => {
+        el.classList.toggle('active', currentTags.some(t => el.textContent.includes(t)));
+      });
+      applyFilters();
+    }
+
+    function handleSearch(e) {
+      applyFilters(e.target.value);
+    }
+
+    function applyFilters(searchTerm = '') {
+      filteredBookmarks = bookmarks.filter(b => {
+        const matchesCategory = !currentCategory || b.categoryId === currentCategory;
+        const matchesTags = currentTags.length === 0 || currentTags.some(tag => b.tags.includes(tag));
+        const matchesSearch = !searchTerm ||
+          b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          b.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (b.description && b.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        return matchesCategory && matchesTags && matchesSearch;
+      });
+
+      renderBookmarks();
+    }
+
+    init();
+  </script>
+</body>
+</html>

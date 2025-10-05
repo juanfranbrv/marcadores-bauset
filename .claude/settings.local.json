@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:bauset.es)",
+      "Bash(grep:*)",
+      "Read(//c/Users/Usuario/Downloads/marcadores-bauset-2025-10-04 (13)/**)",
+      "Read(//c/Users/Usuario/Downloads/marcadores-bauset-2025-10-04 (13)/css/**)",
+      "Read(//c/Users/Usuario/Downloads/marcadores-bauset-2025-10-04 (13)/js/**)",
+      "Read(//f//**)",
+      "Bash(awk:*)",
+      "Bash(git --version)",
+      "Bash(gh:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

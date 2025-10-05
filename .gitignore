@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/
+
+# Web export output
+web/
+
+# Temporary files
+*.tmp
+*.temp
+temp_*
+data-export.json
+
+# Chrome extension private key
+*.pem
+
+# Environment files
+.env
+.env.local

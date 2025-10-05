@@ -1,0 +1,17 @@
+{
+  "name": "marcadores-bauset",
+  "version": "1.0.0",
+  "description": "Chrome extension for bookmark management with thumbnail capture and static site generation",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "validate": "node tests/validate-structure.js",
+    "clean": "node tests/cleanup.js",
+    "build": "echo 'Extension ready for development'",
+    "lint": "echo 'No linter configured yet'",
+    "generate-web": "node scripts/generate-web.js"
+  },
+  "keywords": ["chrome-extension", "bookmarks", "thumbnails", "static-site"],
+  "author": "Bauset",
+  "license": "MIT"
+}
