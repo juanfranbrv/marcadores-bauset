@@ -13,17 +13,48 @@ class SimplePopup {
       saveBtn: document.getElementById('saveBtn'),
       manageBtn: document.getElementById('manageBtn'),
       status: document.getElementById('status'),
-      form: document.getElementById('bookmarkForm')
+      form: document.getElementById('bookmarkForm'),
+      themeToggle: document.getElementById('themeToggle')
     };
 
     this.init();
   }
 
   async init() {
+    this.initTheme();
     await this.loadCurrentTab();
     await this.loadData();
     this.populateCategories();
     this.setupEventListeners();
+  }
+
+  initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      this.updateThemeIcon(true);
+    } else {
+      document.body.classList.remove('dark');
+      this.updateThemeIcon(false);
+    }
+  }
+
+  toggleTheme() {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    this.updateThemeIcon(isDark);
+  }
+
+  updateThemeIcon(isDark) {
+    const sunIcon = document.querySelector('.theme-icon-sun');
+    const moonIcon = document.querySelector('.theme-icon-moon');
+    if (isDark) {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'inline';
+    } else {
+      sunIcon.style.display = 'inline';
+      moonIcon.style.display = 'none';
+    }
   }
 
   async loadData() {
@@ -134,6 +165,7 @@ class SimplePopup {
     this.elements.form.addEventListener('submit', this.handleSubmit.bind(this));
     this.elements.manageBtn.addEventListener('click', this.openOptions.bind(this));
     this.elements.category.addEventListener('change', this.handleCategoryChange.bind(this));
+    this.elements.themeToggle.addEventListener('click', this.toggleTheme.bind(this));
   }
 
   async handleCategoryChange(event) {

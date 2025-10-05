@@ -4,17 +4,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Marcadores - Marcadores Bauset</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
       margin: 0;
       padding: 20px;
       background: #f8f9fa;
       color: #333;
+    }
+
+    .dark body {
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    /* Dark mode styles */
+    .dark .tabs,
+    .dark .section,
+    .dark .modal-content,
+    .dark .card,
+    .dark .stat-card {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    .dark .search-box input,
+    .dark select,
+    .dark input[type="text"],
+    .dark input[type="url"],
+    .dark input[type="email"],
+    .dark textarea {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
+
+    .dark select option {
+      background: #374151;
+      color: #f9fafb;
+    }
+
+    .dark select option:checked {
+      background: #1f2937;
+      color: #f9fafb;
+    }
+
+    .dark .section h2,
+    .dark .card h3,
+    .dark .bookmark-title,
+    .dark .category-name {
+      color: #f9fafb;
+    }
+
+    .dark .bookmark-url {
+      color: #60a5fa !important;
+    }
+
+    .dark .bookmark-url a {
+      color: #60a5fa !important;
+    }
+
+    .dark .bookmark-url a:visited {
+      color: #60a5fa !important;
+    }
+
+    .dark .bookmark-url a:hover {
+      color: #93c5fd !important;
+    }
+
+    .dark .bookmark-description,
+    .dark .card-meta,
+    .dark .stat-label,
+    .dark .category-description {
+      color: #9ca3af;
+    }
+
+    .dark .tag {
+      background: #1e3a8a;
+      color: #93c5fd;
+    }
+
+    .dark .card-thumbnail {
+      background: #374151;
+    }
+
+    .dark .tab {
+      color: #9ca3af;
+    }
+
+    .dark .tab:hover:not(.active) {
+      background: #374151;
+    }
+
+    .dark .btn-secondary {
+      background: #374151;
+      color: #f9fafb;
+      border-color: #4b5563;
+    }
+
+    .dark .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .dark .status-message.success {
+      background: #065f46;
+      border-color: #047857;
+      color: #d1fae5;
+    }
+
+    .dark .status-message.error {
+      background: #991b1b;
+      border-color: #dc2626;
+      color: #fee2e2;
+    }
+
+    .dark .status-message.info {
+      background: #1e40af;
+      border-color: #2563eb;
+      color: #dbeafe;
+    }
+
+    .dark .modal {
+      background: rgba(0, 0, 0, 0.8);
     }
 
     .container {
@@ -203,14 +334,80 @@
       top: 10px;
       right: 10px;
       display: flex;
-      gap: 5px;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      padding: 8px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+    }
+
+    .icon-btn:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .dark .icon-btn {
+      color: #9ca3af;
+    }
+
+    .dark .icon-btn:hover {
+      background: #374151;
+      color: #f9fafb;
+    }
+
+    .icon-btn-danger:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .dark .icon-btn-danger:hover {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .icon-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .icon-btn:disabled:hover {
+      background: transparent;
+      color: #6b7280;
+    }
+
+    .dark .icon-btn:disabled:hover {
+      background: transparent;
+      color: #9ca3af;
     }
 
     .bookmark-url {
       font-size: 12px;
-      color: #667eea;
+      color: #3b82f6;
       word-break: break-all;
       margin-bottom: 8px;
+    }
+
+    .bookmark-url a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .bookmark-url a:hover {
+      text-decoration: underline;
     }
 
     .bookmark-tags {
@@ -451,7 +648,16 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
+    <div class="header" style="position: relative;">
+      <button id="themeToggle" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 8px; cursor: pointer; color: white; transition: all 0.2s; display: flex; align-items: center; justify-content: center;" title="Cambiar tema">
+        <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+          <circle cx="10" cy="10" r="3" fill="currentColor"/>
+          <path d="M10 0V3M10 17V20M20 10H17M3 10H0M16.95 3.05L14.83 5.17M5.17 14.83L3.05 16.95M16.95 16.95L14.83 14.83M5.17 5.17L3.05 3.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" fill="currentColor"/>
+        </svg>
+      </button>
       <h1>📌 Gestión de Marcadores</h1>
       <p>Organiza tus marcadores y categorías</p>
     </div>

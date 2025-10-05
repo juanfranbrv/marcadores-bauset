@@ -185,13 +185,29 @@ class ExportService {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mis Marcadores - Bauset</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="images/logoweb1.png" alt="Logo" onerror="this.style.display='none'">
+        <img src="logoweb1.png" alt="Logo Bauset" onerror="this.style.display='none'">
       </div>
 
       <div class="sidebar-header">
@@ -232,6 +248,15 @@ class ExportService {
               <option value="title">Por título</option>
             </select>
           </div>
+          <button id="themeToggle" class="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema">
+            <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="3" fill="currentColor"/>
+              <path d="M10 0V3M10 17V20M20 10H17M3 10H0M16.95 3.05L14.83 5.17M5.17 14.83L3.05 16.95M16.95 16.95L14.83 14.83M5.17 5.17L3.05 3.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" fill="currentColor"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -267,6 +292,18 @@ class ExportService {
   --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
 }
 
+.dark {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --bg-main: #111827;
+  --bg-card: #273548;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --border: #374151;
+  --shadow: 0 1px 3px rgba(59, 130, 246, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(59, 130, 246, 0.2), 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -274,10 +311,36 @@ class ExportService {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   background: var(--bg-main);
   color: var(--text-primary);
   line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.theme-toggle {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: 12px;
+}
+
+.theme-toggle:hover {
+  background: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.dark .theme-toggle:hover {
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .container {
@@ -311,6 +374,11 @@ body {
   max-height: 60px;
   object-fit: contain;
   object-position: left center;
+  transition: filter 0.3s;
+}
+
+.dark .sidebar-logo img {
+  filter: invert(1) brightness(1.2);
 }
 
 .sidebar-header h1 {
@@ -535,11 +603,52 @@ body {
   border-color: var(--primary);
 }
 
-/* Bookmarks Grid */
-.bookmarks-grid {
+/* Tag Groups */
+.tag-group {
+  margin-bottom: 48px;
+}
+
+.tag-group-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tag-group-icon {
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tag-group-count {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-main);
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-left: auto;
+}
+
+.tag-group-content.grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 24px;
+}
+
+.tag-group-content.list-view {
+  display: block;
+}
+
+/* Bookmarks Grid */
+.bookmarks-grid {
+  display: block;
 }
 
 .bookmarks-grid.list-view {
@@ -562,6 +671,11 @@ body {
   background: #f8f9fa;
   border-left-color: var(--primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.dark .bookmark-list-item:hover {
+  background: #2d3748;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
 }
 
 .list-item-content {
@@ -654,6 +768,10 @@ body {
 .bookmark-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .bookmark-card:hover {
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4), 0 8px 16px rgba(59, 130, 246, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.3);
 }
 
 .bookmark-thumbnail {
@@ -771,6 +889,9 @@ let currentSearchTerm = '';
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  // Inicializar tema
+  initTheme();
+
   document.getElementById('totalCount').textContent = bookmarks.length;
 
   // Mostrar fecha de exportación
@@ -791,6 +912,37 @@ function init() {
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', () => setView(btn.dataset.view));
   });
+
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+    updateThemeIcon(true);
+  } else {
+    document.documentElement.classList.remove('dark');
+    updateThemeIcon(false);
+  }
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
+  const sunIcon = document.querySelector('.theme-icon-sun');
+  const moonIcon = document.querySelector('.theme-icon-moon');
+  if (isDark) {
+    sunIcon.style.display = 'none';
+    moonIcon.style.display = 'inline';
+  } else {
+    sunIcon.style.display = 'inline';
+    moonIcon.style.display = 'none';
+  }
 }
 
 function renderCategories() {
@@ -878,67 +1030,116 @@ function renderBookmarks() {
     return;
   }
 
-  container.style.display = currentView === 'list' ? 'block' : 'grid';
+  container.style.display = 'block';
   emptyState.style.display = 'none';
-  container.className = 'bookmarks-grid' + (currentView === 'list' ? ' list-view' : '');
+
+  // Agrupar marcadores por etiquetas
+  const bookmarksByTag = {};
+  const bookmarksWithoutTags = [];
+
+  filteredBookmarks.forEach(bookmark => {
+    if (!bookmark.tags || bookmark.tags.length === 0) {
+      bookmarksWithoutTags.push(bookmark);
+    } else {
+      // Agrupar por la primera etiqueta
+      const mainTag = bookmark.tags[0];
+      if (!bookmarksByTag[mainTag]) {
+        bookmarksByTag[mainTag] = [];
+      }
+      bookmarksByTag[mainTag].push(bookmark);
+    }
+  });
 
   let html = '';
 
-  if (currentView === 'list') {
-    // VISTA LISTA: Una línea por marcador, sin imagen
-    filteredBookmarks.forEach(bookmark => {
-      const category = categories.find(c => c.id === bookmark.categoryId);
-      const categoryColor = category && category.color ? category.color : '#667eea';
-      const tagsHtml = bookmark.tags && bookmark.tags.length > 0
-        ? bookmark.tags.slice(0, 3).map(tag => '<span class="list-tag">'+escapeHtml(tag)+'</span>').join('')
-        : '';
+  // Renderizar marcadores sin etiquetas primero
+  if (bookmarksWithoutTags.length > 0) {
+    html += '<div class="tag-group">';
+    html += '<h3 class="tag-group-title"><span class="tag-group-icon">📋</span>Sin etiquetar<span class="tag-group-count">'+bookmarksWithoutTags.length+'</span></h3>';
+    html += '<div class="tag-group-content '+(currentView === 'list' ? 'list-view' : 'grid-view')+'">';
 
-      html += '<div class="bookmark-list-item" onclick="window.open(\\\''+bookmark.url+'\\\', \\\'_blank\\\')">';
-      html += '<div class="list-item-content">';
-      html += '<span class="category-color-dot" style="background-color: '+categoryColor+';"></span>';
-      html += '<span class="list-title">'+escapeHtml(bookmark.title)+'</span>';
-      if (bookmark.description) {
-        html += '<span class="list-separator">•</span><span class="list-description">'+escapeHtml(bookmark.description)+'</span>';
-      }
-      html += '<span class="list-separator">•</span><span class="list-url">'+escapeHtml(new URL(bookmark.url).hostname)+'</span>';
-      if (tagsHtml) {
-        html += '<span class="list-separator">•</span>'+tagsHtml;
-      }
-      html += '<span class="list-separator">•</span><span class="list-category">'+(category ? escapeHtml(category.name) : 'Sin categoría')+'</span>';
-      html += '<span class="list-separator">•</span><span class="list-date">'+new Date(bookmark.createdAt).toLocaleDateString('es-ES')+'</span>';
-      html += '</div></div>';
+    bookmarksWithoutTags.forEach(bookmark => {
+      html += renderBookmarkCard(bookmark, currentView);
     });
-  } else {
-    // VISTA GRID: Tarjetas con imagen
-    filteredBookmarks.forEach(bookmark => {
-      const category = categories.find(c => c.id === bookmark.categoryId);
-      const categoryColor = category && category.color ? category.color : '#667eea';
-      const imgSrc = bookmark.imageKeys && bookmark.imageKeys.thumb
-        ? 'images/thumbs/' + bookmark.imageKeys.thumb
-        : 'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'320\\\' height=\\\'180\\\'%3E%3Crect fill=\\\'%23667eea\\\' width=\\\'320\\\' height=\\\'180\\\'/%3E%3C/svg%3E';
 
-      html += '<div class="bookmark-card" onclick="window.open(\\\''+bookmark.url+'\\\', \\\'_blank\\\')">';
-      html += '<div class="bookmark-thumbnail"><img src="'+imgSrc+'" alt="" loading="lazy"></div>';
-      html += '<div class="bookmark-content"><h3 class="bookmark-title">'+escapeHtml(bookmark.title)+'</h3>';
-      html += '<div class="bookmark-url">'+escapeHtml(new URL(bookmark.url).hostname)+'</div>';
-
-      if (bookmark.description) {
-        html += '<p class="bookmark-description">'+escapeHtml(bookmark.description)+'</p>';
-      }
-
-      if (bookmark.tags && bookmark.tags.length > 0) {
-        html += '<div class="bookmark-tags">';
-        bookmark.tags.slice(0, 5).forEach(tag => {
-          html += '<span class="bookmark-tag">'+escapeHtml(tag)+'</span>';
-        });
-        html += '</div>';
-      }
-
-      html += '<div class="bookmark-meta"><span><span class="category-color-dot" style="background-color: '+categoryColor+';"></span>'+(category ? escapeHtml(category.name) : 'Sin categoría')+'</span><span>'+new Date(bookmark.createdAt).toLocaleDateString('es-ES')+'</span></div></div></div>';
-    });
+    html += '</div></div>';
   }
 
+  // Ordenar etiquetas por cantidad de marcadores (descendente)
+  const tagNames = Object.keys(bookmarksByTag).sort((a, b) => {
+    return bookmarksByTag[b].length - bookmarksByTag[a].length;
+  });
+
+  // Renderizar grupos de etiquetas ordenados por cantidad
+  tagNames.forEach(tagName => {
+    const bookmarksInGroup = bookmarksByTag[tagName];
+
+    html += '<div class="tag-group">';
+    html += '<h3 class="tag-group-title"><span class="tag-group-icon">#</span>'+escapeHtml(tagName)+'<span class="tag-group-count">'+bookmarksInGroup.length+'</span></h3>';
+    html += '<div class="tag-group-content '+(currentView === 'list' ? 'list-view' : 'grid-view')+'">';
+
+    bookmarksInGroup.forEach(bookmark => {
+      html += renderBookmarkCard(bookmark, currentView);
+    });
+
+    html += '</div></div>';
+  });
+
   container.innerHTML = html;
+}
+
+function renderBookmarkCard(bookmark, view) {
+  const category = categories.find(c => c.id === bookmark.categoryId);
+  const categoryColor = category && category.color ? category.color : '#667eea';
+  let html = '';
+
+  if (view === 'list') {
+    // VISTA LISTA
+    const tagsHtml = bookmark.tags && bookmark.tags.length > 0
+      ? bookmark.tags.slice(0, 3).map(tag => '<span class="list-tag">'+escapeHtml(tag)+'</span>').join('')
+      : '';
+
+    html += '<div class="bookmark-list-item" onclick="window.open(\\\''+bookmark.url+'\\\', \\\'_blank\\\')">';
+    html += '<div class="list-item-content">';
+    html += '<span class="category-color-dot" style="background-color: '+categoryColor+';"></span>';
+    html += '<span class="list-title">'+escapeHtml(bookmark.title)+'</span>';
+    if (bookmark.description) {
+      html += '<span class="list-separator">•</span><span class="list-description">'+escapeHtml(bookmark.description)+'</span>';
+    }
+    html += '<span class="list-separator">•</span><span class="list-url">'+escapeHtml(new URL(bookmark.url).hostname)+'</span>';
+    if (tagsHtml) {
+      html += '<span class="list-separator">•</span>'+tagsHtml;
+    }
+    html += '<span class="list-separator">•</span><span class="list-category">'+(category ? escapeHtml(category.name) : 'Sin categoría')+'</span>';
+    html += '<span class="list-separator">•</span><span class="list-date">'+new Date(bookmark.createdAt).toLocaleDateString('es-ES')+'</span>';
+    html += '</div></div>';
+  } else {
+    // VISTA GRID
+    const imgSrc = bookmark.imageKeys && bookmark.imageKeys.thumb
+      ? 'images/thumbs/' + bookmark.imageKeys.thumb
+      : 'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'320\\\' height=\\\'180\\\'%3E%3Crect fill=\\\'%23667eea\\\' width=\\\'320\\\' height=\\\'180\\\'/%3E%3C/svg%3E';
+
+    html += '<div class="bookmark-card" onclick="window.open(\\\''+bookmark.url+'\\\', \\\'_blank\\\')">';
+    html += '<div class="bookmark-thumbnail"><img src="'+imgSrc+'" alt="" loading="lazy"></div>';
+    html += '<div class="bookmark-content"><h3 class="bookmark-title">'+escapeHtml(bookmark.title)+'</h3>';
+    html += '<div class="bookmark-url">'+escapeHtml(new URL(bookmark.url).hostname)+'</div>';
+
+    if (bookmark.description) {
+      html += '<p class="bookmark-description">'+escapeHtml(bookmark.description)+'</p>';
+    }
+
+    if (bookmark.tags && bookmark.tags.length > 0) {
+      html += '<div class="bookmark-tags">';
+      bookmark.tags.slice(0, 5).forEach(tag => {
+        html += '<span class="bookmark-tag">'+escapeHtml(tag)+'</span>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="bookmark-meta"><span><span class="category-color-dot" style="background-color: '+categoryColor+';"></span>'+(category ? escapeHtml(category.name) : 'Sin categoría')+'</span><span>'+new Date(bookmark.createdAt).toLocaleDateString('es-ES')+'</span></div></div></div>';
+  }
+
+  return html;
 }
 
 function selectCategory(categoryId, categoryName) {

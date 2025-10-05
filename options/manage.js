@@ -7,6 +7,9 @@ class BookmarkManager {
     this.currentEditingCategory = null;
 
     this.elements = {
+      // Theme toggle
+      themeToggle: document.getElementById('themeToggle'),
+
       // Estadísticas
       totalBookmarks: document.getElementById('totalBookmarks'),
       totalCategories: document.getElementById('totalCategories'),
@@ -67,12 +70,42 @@ class BookmarkManager {
   }
 
   async init() {
+    this.initTheme();
     await this.loadData();
     this.setupEventListeners();
     this.updateStats();
     this.renderBookmarks();
     this.renderCategories();
     this.populateCategorySelects();
+  }
+
+  initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      this.updateThemeIcon(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      this.updateThemeIcon(false);
+    }
+  }
+
+  toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    this.updateThemeIcon(isDark);
+  }
+
+  updateThemeIcon(isDark) {
+    const sunIcon = document.querySelector('.theme-icon-sun');
+    const moonIcon = document.querySelector('.theme-icon-moon');
+    if (isDark) {
+      sunIcon.style.display = 'inline';
+      moonIcon.style.display = 'none';
+    } else {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'inline';
+    }
   }
 
   async loadData() {
@@ -127,6 +160,9 @@ class BookmarkManager {
   }
 
   setupEventListeners() {
+    // Theme toggle
+    this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
+
     // Pestañas
     this.elements.tabs.forEach(tab => {
       tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
@@ -357,11 +393,15 @@ class BookmarkManager {
       return `
         <div class="card">
           <div class="card-actions">
-            <button class="btn btn-secondary btn-small" data-action="edit-bookmark" data-id="${bookmark.id}" title="Editar">
-              ✏️
+            <button class="icon-btn" data-action="edit-bookmark" data-id="${bookmark.id}" title="Editar">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+              </svg>
             </button>
-            <button class="btn btn-danger btn-small" data-action="delete-bookmark" data-id="${bookmark.id}" title="Eliminar">
-              🗑️
+            <button class="icon-btn icon-btn-danger" data-action="delete-bookmark" data-id="${bookmark.id}" title="Eliminar">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
             </button>
           </div>
           ${thumbnailHtml}
@@ -434,11 +474,15 @@ class BookmarkManager {
       return `
         <div class="card">
           <div class="card-actions">
-            <button class="btn btn-secondary btn-small" data-action="edit-category" data-id="${category.id}" title="Editar">
-              ✏️
+            <button class="icon-btn" data-action="edit-category" data-id="${category.id}" title="Editar">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+              </svg>
             </button>
-            <button class="btn btn-danger btn-small" data-action="delete-category" data-id="${category.id}" title="Eliminar" ${bookmarkCount > 0 ? 'disabled' : ''}>
-              🗑️
+            <button class="icon-btn icon-btn-danger" data-action="delete-category" data-id="${category.id}" title="Eliminar" ${bookmarkCount > 0 ? 'disabled' : ''}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
             </button>
           </div>
           <h3>
@@ -931,6 +975,17 @@ class BookmarkManager {
       // Agregar datos JSON como data.js
       const dataJS = `const BOOKMARKS_DATA = ${JSON.stringify(exportData, null, 2)};`;
       zip.addFile('js/data.js', dataJS);
+
+      // Agregar logo
+      try {
+        const logoResponse = await fetch('../logoweb1.png');
+        if (logoResponse.ok) {
+          const logoBlob = await logoResponse.blob();
+          zip.addFile('logoweb1.png', logoBlob);
+        }
+      } catch (error) {
+        console.warn('No se pudo agregar el logo:', error);
+      }
 
       // Agregar imágenes desde OPFS
       this.showStatus('Exportando imágenes...', 'info');

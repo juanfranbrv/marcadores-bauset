@@ -4,25 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Guardar Marcador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
       width: 320px;
       margin: 0;
       padding: 16px;
-      background: #f8f9fa;
+      background: #f8fafc;
+      color: #1e293b;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    body.dark {
+      background: #111827;
+      color: #f9fafb;
     }
 
     .header {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 16px;
     }
 
     .title {
       font-size: 18px;
       font-weight: 600;
-      color: #333;
-      margin: 0;
+      color: #1e293b;
+    }
+
+    body.dark .title {
+      color: #f9fafb;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dark .theme-toggle {
+      border-color: #374151;
+    }
+
+    .theme-toggle:hover {
+      background: #f1f5f9;
+      transform: scale(1.05);
+    }
+
+    body.dark .theme-toggle:hover {
+      background: #1f2937;
     }
 
     .current-page {
@@ -30,7 +77,13 @@
       padding: 12px;
       border-radius: 8px;
       margin-bottom: 16px;
-      border: 1px solid #e9ecef;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark .current-page {
+      background: #1f2937;
+      border-color: #374151;
     }
 
     .page-title {
@@ -40,15 +93,24 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: #1e293b;
+    }
+
+    body.dark .page-title {
+      color: #f9fafb;
     }
 
     .page-url {
       font-size: 12px;
-      color: #666;
+      color: #64748b;
       margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    body.dark .page-url {
+      color: #9ca3af;
     }
 
     .form-group {
@@ -59,8 +121,12 @@
       display: block;
       font-size: 13px;
       font-weight: 500;
-      margin-bottom: 4px;
-      color: #333;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+
+    body.dark .form-label {
+      color: #cbd5e1;
     }
 
     .form-input, .form-select, .form-textarea {
@@ -71,33 +137,61 @@
       font-size: 14px;
       font-family: inherit;
       box-sizing: border-box;
+      background: white;
+      color: #1e293b;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    body.dark .form-input,
+    body.dark .form-select,
+    body.dark .form-textarea {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    body.dark .form-input::placeholder,
+    body.dark .form-textarea::placeholder {
+      color: #6b7280;
     }
 
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-textarea {
+      resize: none;
     }
 
     .btn {
       width: 100%;
       padding: 10px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
       margin-bottom: 8px;
+      font-family: inherit;
     }
 
     .btn-primary {
-      background: #667eea;
+      background: #3b82f6;
       color: white;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
     .btn-primary:hover:not(:disabled) {
-      background: #5a6fd8;
+      background: #2563eb;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .btn-primary:disabled {
@@ -105,47 +199,93 @@
       cursor: not-allowed;
     }
 
+    body.dark .btn-primary:disabled {
+      background: #4b5563;
+    }
+
     .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
+      background: white;
+      color: #475569;
       border: 1px solid #d1d5db;
     }
 
+    body.dark .btn-secondary {
+      background: #374151;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+
     .btn-secondary:hover {
-      background: #e5e7eb;
+      background: #f8fafc;
+    }
+
+    body.dark .btn-secondary:hover {
+      background: #4b5563;
     }
 
     .status {
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 6px;
       font-size: 13px;
       text-align: center;
       margin-bottom: 12px;
       display: none;
+      border: 1px solid;
     }
 
     .status.success {
       background: #dcfce7;
       color: #166534;
-      border: 1px solid #bbf7d0;
+      border-color: #bbf7d0;
+    }
+
+    body.dark .status.success {
+      background: #064e3b;
+      color: #6ee7b7;
+      border-color: #047857;
     }
 
     .status.error {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    body.dark .status.error {
+      background: #7f1d1d;
+      color: #fca5a5;
+      border-color: #991b1b;
     }
 
     .status.info {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #bfdbfe;
+    }
+
+    body.dark .status.info {
+      background: #1e3a8a;
+      color: #93c5fd;
+      border-color: #1e40af;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1 class="title">📌 Marcadores Bauset</h1>
+    <h1 class="title">📌 Marcadores</h1>
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">
+      <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10" cy="10" r="3" fill="currentColor"/>
+        <path d="M10 0V3M10 17V20M20 10H17M3 10H0M16.95 3.05L14.83 5.17M5.17 14.83L3.05 16.95M16.95 16.95L14.83 14.83M5.17 5.17L3.05 3.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" fill="currentColor"/>
+      </svg>
+    </button>
   </div>
 
   <div class="current-page">
@@ -170,7 +310,7 @@
 
     <div class="form-group">
       <label for="description" class="form-label">Descripción (opcional)</label>
-      <textarea id="description" class="form-textarea" rows="2" placeholder="Añade una descripción..."></textarea>
+      <textarea id="description" class="form-textarea" rows="7" placeholder="Añade una descripción..."></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary" id="saveBtn">
